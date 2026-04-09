@@ -1,2 +1,26 @@
-# data-analytics
-# BigQuery Weather Data Analysis.ipynb
+# 📊 Портфолио — Файг Байрамов | Data Analyst
+
+Аналитик данных с опытом работы в Министерстве сельского хозяйства Азербайджана.
+Специализация: Power BI, SQL, Python, BigQuery ML, статистическое моделирование.
+
+## 🛠 Инструменты
+Power BI · DAX · SQL · Python (Pandas, NumPy) · BigQuery · Looker Studio · ETL
+
+## 📁 Проекты в этом репозитории
+
+| Проект | Описание | Инструменты |
+|--------|----------|-------------|
+| Export_from_sheet_ƏDV | Анализ данных по НДС (ƏDV) — выгрузка и обработка | Python, Pandas |
+| Tesla_(TSLA).ipynb | Анализ акций Tesla: динамика цен, тренды | Python, Pandas |
+| XALXAL.pbix | Power BI дашборд — визуализация данных | Power BI, DAX |
+| code (11).html | Интерактивный HTML-отчёт | HTML, JavaScript |
+| gubre-calculator | Калькулятор удобрений для агросектора | Python |
+| soil_measures.csv | Датасет: замеры показателей почвы | CSV, Data |
+
+## 🔗 Ссылки
+- 📈 Looker Studio: [Сельскохозяйственная аналитика](https://lookerstudio.google.com/reporting/85d24763-8a4e-41cd-a1b8-f044bbdd33d3/page/r2kuC)
+- https://lookerstudio.google.com/reporting/7fae413d-d124-43da-9067-df9526f136bf
+  
+
+## 📬 Контакты
+bayramov.faig@gmail.com
