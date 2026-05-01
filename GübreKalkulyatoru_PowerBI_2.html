@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gübrə Kalkulyatoru v5.0 - Azərbaycan</title><style>
+:root {
+--primary-color: #2c5530;
+--secondary-color: #4a7c59;
+--background-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+--white-panel: rgba(255, 255, 255, 0.98);
+--shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+--input-border: #d1d5db;
+--input-focus-border: #4a7c59;
+--output-panel-bg: #ddebf7;
+--output-panel-border: #b5cde2;
+}
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body {
+font-family:'Segoe UI',sans-serif;
+background: var(--background-gradient);
+color: #333;
+min-height: 100vh;
+padding: 20px;
+}
+.container {
+max-width: 1400px;
+margin: 0 auto;
+background: var(--white-panel);
+border-radius: 20px;
+box-shadow: var(--shadow);
+overflow: hidden;
+}
+.header {
+background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+color: white;
+padding: 30px;
+text-align: center;
+}
+.header h1 {
+font-size: 2.5em;
+margin-bottom: 10px;
+}
+.header p {
+font-size: 1.2em;
+opacity: 0.9;
+}
+.main-content {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 30px;
+padding: 30px;
+}
+.input-section {
+background: white;
+border-radius: 15px;
+padding: 25px;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+}
+.results-section {
+padding: 0;
+background-color: transparent;
+box-shadow: none;
+}
+.section-title {
+font-size: 1.5em;
+color: var(--primary-color);
+margin-bottom: 20px;
+border-bottom: 3px solid var(--secondary-color);
+padding-bottom: 10px;
+}
+.form-group {
+margin-bottom: 20px;
+}
+.form-group label {
+display: block;
+margin-bottom: 8px;
+font-weight: 600;
+color: #333;
+}
+.slider-group {
+display: flex;
+align-items: center;
+gap: 15px;
+}
+.form-group input[type="number"] {
+width: 80px;
+padding: 12px;
+border: 2px solid var(--input-border);
+border-radius: 8px;
+font-size: 16px;
+text-align: center;
+font-weight: 500;
+background-color: #f9fafb;
+}
+.form-group input[type="range"] {
+flex-grow: 1;
+-webkit-appearance: none;
+appearance: none;
+width: 100%;
+height: 8px;
+background: #e0e0e0;
+border-radius: 5px;
+outline: none;
+opacity: 0.9;
+}
+.form-group input[type="range"]:hover {
+opacity: 1;
+}
+.form-group input[type="range"]::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 24px;
+height: 24px;
+background: var(--secondary-color);
+cursor: pointer;
+border-radius: 50%;
+border: 3px solid white;
+}
+.form-group input[type="range"]::-moz-range-thumb {
+width: 24px;
+height: 24px;
+background: var(--secondary-color);
+cursor: pointer;
+border-radius: 50%;
+border: 3px solid white;
+}
+.form-group select {
+width: 100%;
+padding: 12px;
+border: 2px solid var(--input-border);
+border-radius: 8px;
+font-size: 16px;
+background-color: #f9fafb;
+-webkit-appearance: none;
+appearance: none;
+background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+background-repeat: no-repeat;
+background-position: right 1rem center;
+background-size: 1em;
+}
+.form-group input:focus, .form-group select:focus {
+outline: none;
+border-color: var(--input-focus-border);
+box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+background-color: white;
+}
+.action-buttons {
+display: flex;
+gap: 15px;
+margin: 20px 0;
+flex-wrap: wrap;
+}
+.action-btn {
+flex: 1;
+padding: 15px 10px;
+color: white;
+border: none;
+border-radius: 10px;
+font-size: 16px;
+font-weight: 600;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+min-width: 150px;
+}
+.txt-btn {
+background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+}
+.action-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+.action-btn:active {
+transform: translateY(0);
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+.results-display {
+background: var(--output-panel-bg);
+border: 1px solid var(--output-panel-border);
+border-radius: 15px;
+padding: 25px;
+font-family:'Segoe UI',sans-serif;
+font-size: 14px;
+line-height: 1.6;
+height: 100%;
+overflow-y: auto;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+}
+#results-container {
+border: none;
+font-family:monospace;
+}
+.results-display h3 {
+color: var(--primary-color);
+border-bottom: 2px solid var(--secondary-color);
+padding-bottom: 5px;
+margin-bottom: 15px;
+}
+.result-item {
+margin-bottom: 10px;
+padding: 10px;
+background: rgba(255, 255, 255, 0.6);
+border-left: 4px solid var(--secondary-color);
+border-radius: 4px;
+}
+.result-item strong {
+color: var(--primary-color);
+}
+.agronomy-info {
+margin-top: 20px;
+padding-top: 15px;
+border-top: 2px dashed var(--secondary-color);
+}
+.agronomy-info h4 {
+color: var(--primary-color);
+margin-bottom: 8px;
+}
+.agronomy-info p {
+font-size: 13px;
+line-height: 1.5;
+color: #333;
+background: rgba(255, 255, 255, 0.5);
+padding: 10px;
+border-radius: 5px;
+}
+.chart-section {
+grid-column: 1 / -1;
+background: white;
+border-radius: 15px;
+padding: 25px;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+margin-top: 30px;
+}
+.chart-container {
+width: 100%;
+height: 400px;
+margin-top: 20px;
+}
+.soil-levels-table {
+background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+border-radius: 10px;
+padding: 15px;
+margin-top: 15px;
+border-left: 5px solid #ff9800;
+}
+.soil-levels-table h4 {
+color: #e65100;
+margin-bottom: 10px;
+}
+.soil-table {
+width: 100%;
+border-collapse: collapse;
+margin-top: 10px;
+font-size: 12px;
+}
+.soil-table th, .soil-table td {
+border: 1px solid #ddd;
+padding: 6px;
+text-align: center;
+}
+.soil-table th {
+background: #ff9800;
+color: white;
+font-weight: bold;
+}
+.soil-table tr:nth-child(even) {
+background: #fff8f0;
+}
+@media (max-width: 900px) {
+.main-content {
+grid-template-columns: 1fr;
+gap: 20px;
+padding: 20px;
+}
+.header h1 {
+font-size: 2em;
+}
+}
+.highlight {
+background: linear-gradient(120deg, #a8e063 0%, #56ab2f 100%);
+padding: 3px 8px;
+border-radius: 6px;
+font-weight: bold;
+color: white;
+text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+.cost-summary {
+background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+border-radius: 10px;
+padding: 15px;
+margin: 15px 0;
+border-left: 5px solid #ff6b35;
+}
+.cost-summary h4 {
+color: #d63031;
+margin-bottom: 10px;
+}
+.modal-overlay {
+position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6);
+display: flex; justify-content: center; align-items: center; z-index: 1000;
+opacity: 0; visibility: hidden;
+}
+.modal-overlay.visible { opacity: 1; visibility: visible; }
+.modal-content {
+background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+width: 90%; max-width: 450px; text-align: center; transform: scale(0.9);
+}
+.modal-overlay.visible .modal-content { transform: scale(1); }
+.modal-content h3 { color: var(--primary-color); margin-bottom: 15px; }
+.modal-content p { margin-bottom: 25px; font-size: 1.1em; color: #555; }
+.modal-close-btn {
+padding: 10px 25px; background: var(--secondary-color); color: white;
+border: none; border-radius: 8px; cursor: pointer;
+}
+.modal-close-btn:hover { background: var(--primary-color); }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>🌾 Gübrə Kalkulyatoru v5.0</h1>
+<p>Azərbaycan Kənd Təsərrüfatı üçün Professional Gübrə Hesablamaları</p>
+</div>
+<div class="main-content">
+<div class="input-section">
+<h2 class="section-title">📊 Məlumatları Daxil Edin</h2>
+<div class="form-group">
+<label for="category">Bitki Kateqoriyası:</label>
+<select id="category"></select>
+</div>
+<div class="form-group">
+<label for="crop">Bitki Növü:</label>
+<select id="crop"></select>
+</div>
+<div class="form-group">
+<label for="yield">Planlaşdırılan Məhsuldarlıq (ton/ha): <span id="yield-value">4.0</span></label>
+<div class="slider-group">
+<input type="range" id="yield-slider" value="4.0" step="0.5" min="0.5" max="150">
+<input type="number" id="yield" value="4.0" step="0.5" min="0.5" max="150">
+</div>
+</div>
+<div class="form-group">
+<label for="area">Sahə (hektar): <span id="area-value">1.0</span></label>
+<div class="slider-group">
+<input type="range" id="area-slider" value="1" step="0.1" min="0.1" max="1000">
+<input type="number" id="area" value="1" step="0.1" min="0.1" max="1000">
+</div>
+</div>
+<div class="form-group">
+<label for="ph">Torpağın pH səviyyəsi: <span id="ph-value">7.2</span></label>
+<div class="slider-group">
+<input type="range" id="ph-slider" value="7.2" step="0.1" min="4.0" max="9.0">
+<input type="number" id="ph" value="7.2" step="0.1" min="4.0" max="9.0">
+</div>
+</div>
+<div class="form-group">
+<label for="nLevel">Torpaqda Azot (N) miqdarı:</label>
+<select id="nLevel">
+<option value="Çox aşağı">Çox aşağı (&lt; 5 mg/kg)</option>
+<option value="Aşağı">Aşağı (5-10 mg/kg)</option>
+<option value="Orta" selected>Orta (10-20 mg/kg)</option>
+<option value="Yüksək">Yüksək (&gt; 20 mg/kg)</option>
+</select>
+</div>
+<div class="form-group">
+<label for="pLevel">Torpaqda Fosfor (P₂O₅) miqdarı:</label>
+<select id="pLevel">
+<option value="Çox aşağı">Çox aşağı (&lt; 5 mg/kg)</option>
+<option value="Aşağı">Aşağı (5-10 mg/kg)</option>
+<option value="Orta" selected>Orta (10-20 mg/kg)</option>
+<option value="Yüksək">Yüksək (&gt; 20 mg/kg)</option>
+</select>
+</div>
+<div class="form-group">
+<label for="kLevel">Torpaqda Kalium (K₂O) miqdarı:</label>
+<select id="kLevel">
+<option value="Çox aşağı">Çox aşağı (&lt; 60 mg/kg)</option>
+<option value="Aşağı">Aşağı (60-120 mg/kg)</option>
+<option value="Orta" selected>Orta (120-180 mg/kg)</option>
+<option value="Yüksək">Yüksək (&gt; 180 mg/kg)</option>
+</select>
+</div>
+<div class="action-buttons">
+<button onclick="exportToTXT()" class="action-btn txt-btn">📄 TXT İxrac Et</button>
+</div>
+<div class="soil-levels-table">
+<h4>🔬 Torpaq Analizləri Göstəriciləri</h4>
+<table class="soil-table">
+<thead><tr><th>Səviyyə</th><th>Azot (N)<br>mq/kg</th><th>Fosfor (P₂O₅)<br>mq/kg</th><th>Kalium (K₂O)<br>mq/kg</th></tr></thead>
+<tbody>
+<tr><td>Çox aşağı</td><td>&lt; 5</td><td>&lt; 5</td><td>&lt; 60</td></tr>
+<tr><td>Aşağı</td><td>5-10</td><td>5-10</td><td>60-120</td></tr>
+<tr><td>Orta</td><td>10-20</td><td>10-20</td><td>120-180</td></tr>
+<tr><td>Yüksək</td><td>&gt; 20</td><td>&gt; 20</td><td>&gt; 180</td></tr>
+</tbody>
+</table>
+<p style="font-size: 11px; color: #666; margin-top: 8px;">* Göstəricilər laboratoriya və regiondan asılı olaraq dəyişə bilər.</p>
+</div>
+</div>
+<div class="results-section">
+<div id="results" class="results-display">
+<p style="text-align:center; padding-top: 20px; font-family:'Segoe UI',sans-serif;">Nəticələri görmək üçün soldakı məlumatları daxil edin və ya dəyişdirin. Hesablama avtomatik aparılır.</p>
+</div>
+</div>
+</div>
+<div class="chart-section">
+<h2 class="section-title">📈 Qrafik Analiz</h2>
+<div class="chart-container"><div id="chartCanvas" style="width:100%;height:280px;"></div></div>
+</div>
+</div>
+<div id="customModal" class="modal-overlay">
+<div class="modal-content">
+<h3 id="modalTitle">Diqqət!</h3>
+<p id="modalMessage"></p>
+<button id="modalCloseBtn" class="modal-close-btn">Bağla</button>
+</div>
+</div>
+<script>
+let lastResults = {};
+// --- DATA SECTION ---
+const cropsData = {
+'Pomidor': {'n': 3.2, 'p': 1.0, 'k': 4.8, 'max_yield': 180}, 'Kələm': {'n': 4.5, 'p': 1.5, 'k': 5.2, 'max_yield': 120},
+'Kartof': {'n': 5.0, 'p': 2.0, 'k': 7.5, 'max_yield': 90}, 'Kök': {'n': 3.0, 'p': 1.0, 'k': 4.5, 'max_yield': 100},
+'Xiyar': {'n': 2.8, 'p': 0.8, 'k': 4.2, 'max_yield': 200}, 'Baş soğan': {'n': 3.5, 'p': 1.2, 'k': 4.0, 'max_yield': 80},
+'Süfrə çuğunduru': {'n': 4.0, 'p': 1.3, 'k': 5.5, 'max_yield': 90}, 'Şirin bibər': {'n': 3.8, 'p': 1.1, 'k': 5.0, 'max_yield': 70},
+'Badımcan': {'n': 4.2, 'p': 1.3, 'k': 4.8, 'max_yield': 80}, 'Balqabaq (Kabaçok)': {'n': 2.5, 'p': 0.9, 'k': 3.8, 'max_yield': 60},
+'Turp': {'n': 2.2, 'p': 0.7, 'k': 2.8, 'max_yield': 40}, 'Kahı': {'n': 1.8, 'p': 0.6, 'k': 2.5, 'max_yield': 50},
+'İspanaq': {'n': 2.0, 'p': 0.8, 'k': 3.2, 'max_yield': 30}, 'Sarımsaq': {'n': 6.0, 'p': 2.0, 'k': 4.5, 'max_yield': 15},
+'Payızlıq buğda': {'n': 35.0, 'p': 12.0, 'k': 25.0, 'max_yield': 12}, 'Yazlıq buğda': {'n': 32.0, 'p': 11.0, 'k': 22.0, 'max_yield': 10},
+'Arpa': {'n': 25.0, 'p': 10.0, 'k': 18.0, 'max_yield': 11}, 'Vələmir': {'n': 28.0, 'p': 12.0, 'k': 20.0, 'max_yield': 9},
+'Dən üçün qarğıdalı': {'n': 24.0, 'p': 10.0, 'k': 28.0, 'max_yield': 18}, 'Silos üçün qarğıdalı': {'n': 3.5, 'p': 1.2, 'k': 4.0, 'max_yield': 80},
+'Çəltik': {'n': 22.0, 'p': 12.0, 'k': 25.0, 'max_yield': 12}, 'Darı': {'n': 30.0, 'p': 9.0, 'k': 15.0, 'max_yield': 6},
+'Sorqo': {'n': 20.0, 'p': 8.0, 'k': 18.0, 'max_yield': 10}, 'Qarabaşaq': {'n': 30.0, 'p': 15.0, 'k': 35.0, 'max_yield': 4},
+'Pambıq': {'n': 60.0, 'p': 20.0, 'k': 45.0, 'max_yield': 6}, 'Günəbaxan': {'n': 50.0, 'p': 25.0, 'k': 120.0, 'max_yield': 5},
+'Şəkər çuğunduru': {'n': 5.5, 'p': 1.8, 'k': 7.5, 'max_yield': 100}, 'Tütün': {'n': 45.0, 'p': 15.0, 'k': 60.0, 'max_yield': 4},
+'Yağlı kətan': {'n': 70.0, 'p': 30.0, 'k': 40.0, 'max_yield': 3}, 'Raps': {'n': 50.0, 'p': 22.0, 'k': 35.0, 'max_yield': 6},
+'Soya': {'n': 65.0, 'p': 18.0, 'k': 25.0, 'max_yield': 5}, 'Yerfındığı': {'n': 45.0, 'p': 15.0, 'k': 20.0, 'max_yield': 4},
+'Küncüt': {'n': 45.0, 'p': 20.0, 'k': 30.0, 'max_yield': 2}, 'Qarpız': {'n': 2.0, 'p': 0.8, 'k': 3.5, 'max_yield': 100},
+'Yemiş': {'n': 2.2, 'p': 0.9, 'k': 3.8, 'max_yield': 80}, 'Balqabaq': {'n': 1.8, 'p': 0.7, 'k': 3.2, 'max_yield': 120},
+'Yonca': {'n': 25.0, 'p': 6.0, 'k': 20.0, 'max_yield': 20}, 'Üçyarpaq yonca': {'n': 20.0, 'p': 5.0, 'k': 15.0, 'max_yield': 15},
+'Esparset': {'n': 22.0, 'p': 5.5, 'k': 18.0, 'max_yield': 12}, 'Vika': {'n': 30.0, 'p': 8.0, 'k': 22.0, 'max_yield': 10},
+'Yem çuğunduru': {'n': 4.5, 'p': 1.5, 'k': 6.0, 'max_yield': 150}, 'Yem kökü': {'n': 3.8, 'p': 1.2, 'k': 5.5, 'max_yield': 120},
+'Sudan otu': {'n': 15.0, 'p': 5.0, 'k': 18.0, 'max_yield': 18}, 'Üzüm': {'n': 6.0, 'p': 2.0, 'k': 8.0, 'max_yield': 40},
+'Alma': {'n': 2.5, 'p': 1.0, 'k': 3.5, 'max_yield': 80}, 'Armud': {'n': 2.8, 'p': 1.2, 'k': 4.0, 'max_yield': 70},
+'Gavalı': {'n': 4.0, 'p': 1.5, 'k': 5.0, 'max_yield': 60}, 'Ərik': {'n': 3.5, 'p': 1.3, 'k': 4.5, 'max_yield': 50},
+'Şaftalı': {'n': 4.2, 'p': 1.4, 'k': 5.2, 'max_yield': 60}, 'Gilas': {'n': 3.8, 'p': 1.2, 'k': 4.8, 'max_yield': 30},
+'Albalı': {'n': 3.0, 'p': 1.0, 'k': 4.0, 'max_yield': 25}, 'Nar': {'n': 5.0, 'p': 1.8, 'k': 6.0, 'max_yield': 50},
+'Əncir': {'n': 4.5, 'p': 1.6, 'k': 5.5, 'max_yield': 40}, 'Xurma': {'n': 3.2, 'p': 1.1, 'k': 4.2, 'max_yield': 50},
+'Fındıq': {'n': 15.0, 'p': 5.0, 'k': 8.0, 'max_yield': 4}, 'Qoz': {'n': 18.0, 'p': 6.0, 'k': 10.0, 'max_yield': 5},
+'Badam': {'n': 20.0, 'p': 7.0, 'k': 12.0, 'max_yield': 3}, 'Çiyələk': {'n': 8.0, 'p': 3.0, 'k': 12.0, 'max_yield': 35},
+'Moruq': {'n': 6.0, 'p': 2.5, 'k': 8.0, 'max_yield': 20}, 'Qarağat': {'n': 7.0, 'p': 2.8, 'k': 9.0, 'max_yield': 18},
+'Kəşniş': {'n': 40.0, 'p': 15.0, 'k': 25.0, 'max_yield': 3}, 'Anis': {'n': 35.0, 'p': 12.0, 'k': 20.0, 'max_yield': 2.5},
+'Zirə': {'n': 38.0, 'p': 14.0, 'k': 22.0, 'max_yield': 2.5}, 'Toxumluq şüyüd': {'n': 45.0, 'p': 18.0, 'k': 30.0, 'max_yield': 2},
+'Razyana': {'n': 42.0, 'p': 16.0, 'k': 28.0, 'max_yield': 2.5}, 'Reyhan': {'n': 25.0, 'p': 8.0, 'k': 15.0, 'max_yield': 10},
+'Nanə': {'n': 20.0, 'p': 6.0, 'k': 12.0, 'max_yield': 8}, 'Limon': {'n': 8.0, 'p': 2.5, 'k': 10.0, 'max_yield': 60},
+'Portağal': {'n': 7.5, 'p': 2.2, 'k': 9.5, 'max_yield': 70}, 'Naringi': {'n': 6.5, 'p': 2.0, 'k': 8.5, 'max_yield': 50},
+'Qreypfrut': {'n': 7.0, 'p': 2.3, 'k': 9.0, 'max_yield': 65}, 'Çay': {'n': 50.0, 'p': 10.0, 'k': 25.0, 'max_yield': 10},
+'Kivi': {'n': 12.0, 'p': 4.0, 'k': 15.0, 'max_yield': 50}, 'Feyxoa': {'n': 8.0, 'p': 3.0, 'k': 10.0, 'max_yield': 20}
+};
+const cropCategories = {
+'Bütün bitkilər': Object.keys(cropsData).sort(),
+'Tərəvəzlər': ['Pomidor', 'Kələm', 'Kartof', 'Kök', 'Xiyar', 'Baş soğan', 'Süfrə çuğunduru', 'Şirin bibər', 'Badımcan', 'Balqabaq (Kabaçok)', 'Turp', 'Kahı', 'İspanaq', 'Sarımsaq'],
+'Taxıllar': ['Payızlıq buğda', 'Yazlıq buğda', 'Arpa', 'Vələmir', 'Dən üçün qarğıdalı', 'Silos üçün qarğıdalı', 'Çəltik', 'Darı', 'Sorqo', 'Qarabaşaq'],
+'Texniki bitkilər': ['Pambıq', 'Günəbaxan', 'Şəkər çuğunduru', 'Tütün', 'Yağlı kətan', 'Raps', 'Soya', 'Yerfındığı', 'Küncüt'],
+'Bostan bitkiləri': ['Qarpız', 'Yemiş', 'Balqabaq'],
+'Yem bitkiləri': ['Yonca', 'Üçyarpaq yonca', 'Esparset', 'Vika', 'Yem çuğunduru', 'Yem kökü', 'Sudan otu'],
+'Meyvə və giləmeyvələr': ['Üzüm', 'Alma', 'Armud', 'Gavalı', 'Ərik', 'Şaftalı', 'Gilas', 'Albalı', 'Nar', 'Əncir', 'Xurma', 'Fındıq', 'Qoz', 'Badam', 'Çiyələk', 'Moruq', 'Qarağat'],
+'Ədviyyat bitkiləri': ['Kəşniş', 'Anis', 'Zirə', 'Toxumluq şüyüd', 'Razyana', 'Reyhan', 'Nanə'],
+'Sitrus bitkiləri': ['Limon', 'Portağal', 'Naringi', 'Qreypfrut'],
+'Subtropik bitkilər': ['Çay', 'Kivi', 'Feyxoa']
+};
+const utilizationCoeffs = { 'Çox aşağı': {n: 0.20, p: 0.15, k: 0.25}, 'Aşağı': {n: 0.30, p: 0.20, k: 0.35}, 'Orta': {n: 0.40, p: 0.25, k: 0.45}, 'Yüksək': {n: 0.50, p: 0.30, k: 0.55} };
+const fertilizerPrices = { n: 1.68, p: 2.43, k: 0.57, applicationCost: 30.0 };
+// --- DOM Elements ---
+const categorySelect = document.getElementById('category');
+const cropSelect = document.getElementById('crop');
+const yieldSlider = document.getElementById('yield-slider');
+const yieldInput = document.getElementById('yield');
+const yieldValueSpan = document.getElementById('yield-value');
+// --- MODAL FUNCTIONS ---
+const modal = document.getElementById('customModal');
+const modalMessage = document.getElementById('modalMessage');
+const modalCloseBtn = document.getElementById('modalCloseBtn');
+const modalTitle = document.getElementById('modalTitle');
+function showModal(message, title = "Diqqət!") { modalMessage.textContent = message; modalTitle.textContent = title; modal.classList.add('visible'); }
+function closeModal() { modal.classList.remove('visible'); }
+modalCloseBtn.addEventListener('click', closeModal);
+modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+// --- CORE FUNCTIONS ---
+function calculate() {
+try {
+const crop = document.getElementById('crop').value;
+const yieldTarget = parseFloat(document.getElementById('yield').value);
+const area = parseFloat(document.getElementById('area').value);
+const ph = parseFloat(document.getElementById('ph').value);
+const nLevel = document.getElementById('nLevel').value;
+const pLevel = document.getElementById('pLevel').value;
+const kLevel = document.getElementById('kLevel').value;
+const cropData = cropsData[crop];
+if (!cropData) return;
+if (yieldTarget > cropData.max_yield) {
+showModal(`Planlaşdırılan məhsuldarlıq (${yieldTarget} t/ha) bu bitki üçün bioloji maksimumu (${cropData.max_yield} t/ha) aşır. Zəhmət olmasa, real bir dəyər seçin.`);
+yieldInput.value = cropData.max_yield;
+yieldSlider.value = cropData.max_yield;
+yieldValueSpan.textContent = cropData.max_yield;
+setTimeout(calculate, 100);
+return;
+}
+if (isNaN(yieldTarget) || isNaN(area) || isNaN(ph) || yieldTarget <= 0 || area <= 0) {
+if (document.getElementById('results').querySelector('h3')) { showModal("Dəyərlər düzgün deyil."); }
+return;
+}
+const nNeed = yieldTarget * cropData.n;
+const pNeed = yieldTarget * cropData.p;
+const kNeed = yieldTarget * cropData.k;
+const nCoeff = utilizationCoeffs[nLevel].n, pCoeff = utilizationCoeffs[pLevel].p, kCoeff = utilizationCoeffs[kLevel].k;
+let nDose = nNeed / nCoeff, pDose = pNeed / pCoeff, kDose = kNeed / kCoeff;
+let phCorrection = "pH səviyyəsi optimal aralıqdadır (5.5 - 7.5).";
+if (ph < 5.5) { pDose *= 1.4; phCorrection = `Turş torpaq (pH < 5.5) - Fosfor doza 40% artırıldı.`; }
+else if (ph > 7.5) { pDose *= 0.8; phCorrection = `Qələvi torpaq (pH > 7.5) - Fosfor doza 20% azaldıldı.`; }
+const ammoniumNitrate = nDose / 0.34, superphosphate = pDose / 0.20, potassiumChloride = kDose / 0.60;
+const nCost = nDose * fertilizerPrices.n, pCost = pDose * fertilizerPrices.p, kCost = kDose * fertilizerPrices.k;
+const totalFertilizerCostPerHa = nCost + pCost + kCost;
+const totalCostPerHa = totalFertilizerCostPerHa + fertilizerPrices.applicationCost;
+const totalCostAllArea = totalCostPerHa * area;
+lastResults = {
+crop, yieldTarget, area, ph, nLevel, pLevel, kLevel,
+nNeed, pNeed, kNeed, nDose, pDose, kDose,
+ammoniumNitrate, superphosphate, potassiumChloride,
+nCost, pCost, kCost, totalFertilizerCostPerHa,
+totalCostPerHa, totalCostAllArea, phCorrection,
+cropData
+};
+displayResults();
+drawChart();
+} catch (error) {
+console.error('Hesablama xətası:', error);
+showModal('Hesablama zamanı sistem xətası baş verdi.');
+}
+}
+function displayResults() {
+const { ...res } = lastResults;
+const resultsDiv = document.getElementById('results');
+resultsDiv.innerHTML = `
+<h3>🎯 HESABLAMA NƏTİCƏLƏRİ</h3>
+<div id="results-container">
+<div class="result-item"><strong>İlkin Məlumatlar:</strong><br>
+Bitki: <span class="highlight">${res.crop}</span>,
+Məhsuldarlıq: <span class="highlight">${res.yieldTarget.toFixed(1)} t/ha</span>,
+Sahə: <span class="highlight">${res.area.toFixed(1)} ha</span>,
+pH: <span class="highlight">${res.ph.toFixed(1)}</span>
+</div>
+<div class="result-item"><strong>🌱 Tələbat (Təsiredici maddə):</strong><br>
+Azot (N): <span class="highlight">${res.nNeed.toFixed(1)} kq/ha</span><br>
+Fosfor (P₂O₅): <span class="highlight">${res.pNeed.toFixed(1)} kq/ha</span><br>
+Kalium (K₂O): <span class="highlight">${res.kNeed.toFixed(1)} kq/ha</span>
+</div>
+<div class="result-item"><strong>💊 Tövsiyə Olunan Dozalar:</strong><br>
+Azot (N): <span class="highlight">${res.nDose.toFixed(1)} kq/ha</span><br>
+Fosfor (P₂O₅): <span class="highlight">${res.pDose.toFixed(1)} kq/ha</span><br>
+Kalium (K₂O): <span class="highlight">${res.kDose.toFixed(1)} kq/ha</span>
+</div>
+<div class="result-item"><strong>📦 Gübrə Miqdarı (Fiziki çəkidə, 1 ha):</strong><br>
+Ammonyak şorası (34%): <span class="highlight">${res.ammoniumNitrate.toFixed(0)} kq/ha</span><br>
+Superfosfat (20%): <span class="highlight">${res.superphosphate.toFixed(0)} kq/ha</span><br>
+Kalium xlorid (60%): <span class="highlight">${res.potassiumChloride.toFixed(0)} kq/ha</span>
+</div>
+<div class="cost-summary"><h4>💰 XƏRC ANALİZİ</h4>
+Gübrələrin dəyəri: <strong>${res.totalFertilizerCostPerHa.toFixed(2)} AZN/ha</strong><br>
+Tətbiq xərci: <strong>${fertilizerPrices.applicationCost.toFixed(2)} AZN/ha</strong><hr style="border: 0; border-top: 1px solid #d63031; margin: 5px 0;">
+<strong>1 Ha üçün ümumi xərc: <span class="highlight">${res.totalCostPerHa.toFixed(2)} AZN</span></strong><br>
+<strong>${res.area.toFixed(1)} Ha üçün ümumi xərc: <span class="highlight">${res.totalCostAllArea.toFixed(2)} AZN</span></strong>
+</div>
+</div>
+<div class="agronomy-info">
+<h4>Mühüm Məlumat: "${res.crop}"</h4>
+<p><strong>Bioloji Maksimum:</strong> Bu bitki üçün orta hesabla maksimum məhsuldarlıq <strong>${res.cropData.max_yield} t/ha</strong> təşkil edir. Bu həddi aşan planlama real olmaya bilər.</p>
+<h4>Aqronomik Prinsip: Azalan Gəlir Qanunu</h4>
+<p>Hər əlavə gübrə dozası məhsuldarlığa getdikcə daha az artım verir və nəticədə effektin dayandığı "plato"ya çatır. Dozanın daha da artırılması bitkiyə və torpağa zərər verə bilər.</p>
+</div>
+`;
+}
+function drawChart(){
+if(!lastResults.nDose)return;
+var el=document.getElementById('chartCanvas');
+var vals=[lastResults.nDose,lastResults.pDose,lastResults.kDose];
+var lbls=['Azot (N)','Fosfor (P₂O₅)','Kalium (K₂O)'];
+var cols=['#36A2EB','#FF6384','#4BC0C0'];
+var mx=Math.max.apply(null,vals)*1.18||1;
+var W=560,H=260,PL=68,PR=20,PT=38,PB=50;
+var cW=W-PL-PR,cH=H-PT-PB;
+var bW=62,gap=(cW-3*bW)/4;
+var ticks='';
+for(var i=0;i<=5;i++){
+var v=mx/5*i;var y=PT+cH-cH*(v/mx);
+ticks+='<line x1="'+PL+'" y1="'+y+'" x2="'+(PL+cW)+'" y2="'+y+'" stroke="#e0e0e0" stroke-width="1"/>';
+ticks+='<text x="'+(PL-6)+'" y="'+(y+4)+'" text-anchor="end" font-size="11" fill="#666">'+v.toFixed(0)+'</text>';
+}
+var bars='';
+for(var j=0;j<3;j++){
+var x=PL+gap+(bW+gap)*j;
+var bh=cH*(vals[j]/mx);
+var y2=PT+cH-bh;
+bars+='<rect x="'+x+'" y="'+y2+'" width="'+bW+'" height="'+bh+'" fill="'+cols[j]+'" rx="4" opacity="0.85"/>';
+bars+='<text x="'+(x+bW/2)+'" y="'+(y2-5)+'" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">'+vals[j].toFixed(1)+'</text>';
+bars+='<text x="'+(x+bW/2)+'" y="'+(H-PB+18)+'" text-anchor="middle" font-size="11" fill="#444">'+lbls[j]+'</text>';
+}
+var title='“'+lastResults.crop+'” üçün Qida Element Balansi';
+el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">'
++'<text x="'+(W/2)+'" y="20" text-anchor="middle" font-size="13" font-weight="bold" fill="#2c5530">'+title+'</text>'
++'<text x="14" y="'+(PT+cH/2)+'" text-anchor="middle" font-size="10" fill="#666" transform="rotate(-90,14,'+(PT+cH/2)+')">Miqdar (kq/ha)</text>'
++ticks
++'<line x1="'+PL+'" y1="'+PT+'" x2="'+PL+'" y2="'+(PT+cH)+'" stroke="#999" stroke-width="2"/>'
++'<line x1="'+PL+'" y1="'+(PT+cH)+'" x2="'+(PL+cW)+'" y2="'+(PT+cH)+'" stroke="#999" stroke-width="2"/>'
++bars+'</svg>';
+}
+function exportToTXT() {
+if (!lastResults.crop) {
+showModal("Mətn faylı yaratmaq üçün əvvəlcə hesablama aparmalısınız.");
+return;
+}
+const { ...res } = lastResults;
+const currentDate = new Date().toLocaleDateString('az-AZ', { day: '2-digit', month: 'long', year: 'numeric'});
+let content = `═══════════════════════════════════════════════════════\n`;
+content += `                      GÜBRƏ HESABATI\n`;
+content += `═══════════════════════════════════════════════════════\n\n`;
+content += `Tarix: ${currentDate}\n`;
+content += `Bitki: ${res.crop}\n\n`;
+content += `--- BAŞLANĞIC MƏLUMATLAR ---\n`;
+content += `Planlaşdırılan Məhsuldarlıq: ${res.yieldTarget.toFixed(1)} t/ha (Bioloji maksimum: ${res.cropData.max_yield} t/ha)\n`;
+content += `Sahə: ${res.area.toFixed(1)} ha\n`;
+content += `Torpağın pH səviyyəsi: ${res.ph.toFixed(1)}\n\n`;
+content += `--- TƏLƏBAT (TƏSİREDİCİ MADDƏ, 1 HA) ---\n`;
+content += `Azot (N): ${res.nNeed.toFixed(1)} kq/ha\n`;
+content += `Fosfor (P₂O₅): ${res.pNeed.toFixed(1)} kq/ha\n`;
+content += `Kalium (K₂O): ${res.kNeed.toFixed(1)} kq/ha\n\n`;
+content += `--- TÖVSİYƏ OLUNAN DOZALAR (1 HA) ---\n`;
+content += `Azot (N): ${res.nDose.toFixed(1)} kq/ha\n`;
+content += `Fosfor (P₂O₅): ${res.pDose.toFixed(1)} kq/ha\n`;
+content += `Kalium (K₂O): ${res.kDose.toFixed(1)} kq/ha\n\n`;
+content += `--- GÜBRƏ MIQDARI (FİZİKİ ÇƏKİDƏ, 1 HA) ---\n`;
+content += `Ammonyak şorası (34%): ${res.ammoniumNitrate.toFixed(0)} kq/ha\n`;
+content += `Superfosfat (20%): ${res.superphosphate.toFixed(0)} kq/ha\n`;
+content += `Kalium xlorid (60%): ${res.potassiumChloride.toFixed(0)} kq/ha\n\n`;
+content += `--- XƏRC ANALİZİ ---\n`;
+content += `Gübrələrin dəyəri: ${res.totalFertilizerCostPerHa.toFixed(2)} AZN/ha\n`;
+content += `Tətbiq xərci: ${fertilizerPrices.applicationCost.toFixed(2)} AZN/ha\n`;
+content += `───────────────────────────────────────────────────────\n`;
+content += `1 Ha üçün ümumi xərc: ${res.totalCostPerHa.toFixed(2)} AZN\n`;
+content += `${res.area.toFixed(1)} Ha üçün ümumi xərc: ${res.totalCostAllArea.toFixed(2)} AZN\n\n`;
+content += `═══════════════════════════════════════════════════════\n`;
+content += `                 TƏTBİQ ÜZRƏ TÖVSİYƏLƏR\n`;
+content += `═══════════════════════════════════════════════════════\n\n`;
+content += `VACİB PRİNSİP: Azalan gəlir qanunu\n`;
+content += `─────────────────────────────────────────\n`;
+content += `Hər əlavə gübrə dozası məhsuldarlığa daha az artım verir\n`;
+content += `və nəticədə effektin dayandığı "plato"ya çatır. Dozanın\n`;
+content += `daha da artırılması bitkiyə və torpağa zərər verə bilər.\n`;
+content += `Bu kalkulyator optimal, iqtisadi cəhətdən səmərəli\n`;
+content += `dozanı tapmağa kömək edir.\n\n`;
+content += `ƏSAS AQRONOMİK PRİNSİPLƏR:\n`;
+content += `─────────────────────────────────\n`;
+content += `• Balanslı qidalanma: Məhsuldarlığın artması BÜTÜN\n`;
+content += `  lazımi elementlərin düzgün nisbətdə olmasını tələb edir\n`;
+content += `  (NPK və pH optimallaşdırılması uğurun açarıdır). Bir\n`;
+content += `  elementin çoxluğu, digərinin çatışmazlığını əvəz etmir.\n\n`;
+content += `• Məhdudlaşdırıcı amillər: Gübrələrin effekti yalnız digər\n`;
+content += `  resurslar (işıq, rütubət, istilik) kifayət qədər\n`;
+content += `  olduqda maksimum olacaq.\n\n`;
+content += `• Dəqiqlik hər şeydən üstündür: Bu hesablama elmi\n`;
+content += `  əsaslı bir tövsiyədir. Ən yaxşı nəticələr, dozaların\n`;
+content += `  mövsüm ərzində aparılan yeni aqrokimyəvi torpaq\n`;
+content += `  analizi və yarpaq diaqnostikası nəticələrinə görə\n`;
+content += `  düzəldilməsi ilə əldə edilir.\n\n`;
+content += `PRAKTİKİ MƏSLƏHƏTLƏR:\n`;
+content += `───────────────────\n`;
+content += `• Gübrələri hissə-hissə, bir neçə dəfəyə verin.\n`;
+content += `• Azotlu: yazda əsas şum altına və əlavə qidalanmada.\n`;
+content += `• Fosforlu və Kaliumlu: əsasən payızda şum altına.\n`;
+content += `• Gübrə verərkən torpağın nəmliyinə nəzarət edin.\n`;
+// Create a blob and trigger download
+const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+const link = document.createElement('a');
+link.href = URL.createObjectURL(blob);
+link.download = `Gubre_Hesabati_${res.crop.replace(/ /g, '_')}.txt`;
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+URL.revokeObjectURL(link.href);
+}
+// --- INITIALIZATION ---
+function initialize() {
+const categorySelect = document.getElementById('category');
+const cropSelect = document.getElementById('crop');
+// Populate categories
+for (const category of Object.keys(cropCategories)) {
+const option = document.createElement('option');
+option.value = category;
+option.textContent = category;
+categorySelect.appendChild(option);
+}
+function updateCropOptions() {
+const selectedCategory = categorySelect.value;
+const crops = cropCategories[selectedCategory].sort();
+cropSelect.innerHTML = '';
+crops.forEach(cropName => {
+if (cropsData[cropName]) {
+const option = document.createElement('option');
+option.value = cropName;
+option.textContent = cropName;
+cropSelect.appendChild(option);
+}
+});
+updateYieldSlider();
+calculate();
+}
+function updateYieldSlider() {
+const cropName = cropSelect.value;
+const cropData = cropsData[cropName];
+if (cropData) {
+yieldSlider.max = cropData.max_yield;
+yieldInput.max = cropData.max_yield;
+if(parseFloat(yieldInput.value) > cropData.max_yield) {
+const newDefault = Math.min(4.0, cropData.max_yield);
+yieldInput.value = newDefault;
+yieldSlider.value = newDefault;
+}
+yieldValueSpan.textContent = parseFloat(yieldInput.value).toFixed(1);
+}
+}
+categorySelect.addEventListener('change', updateCropOptions);
+cropSelect.addEventListener('change', () => {
+updateYieldSlider();
+calculate();
+});
+// Link sliders to number inputs
+const sliders = [
+{ slider: 'yield-slider', input: 'yield', span: 'yield-value' },
+{ slider: 'area-slider', input: 'area', span: 'area-value' },
+{ slider: 'ph-slider', input: 'ph', span: 'ph-value' }
+];
+sliders.forEach(({slider, input, span}) => {
+const sliderEl = document.getElementById(slider);
+const inputEl = document.getElementById(input);
+const spanEl = document.getElementById(span);
+sliderEl.addEventListener('input', () => {
+const value = parseFloat(sliderEl.value);
+inputEl.value = value.toFixed(1);
+spanEl.textContent = value.toFixed(1);
+calculate();
+});
+inputEl.addEventListener('change', () => {
+let val = parseFloat(inputEl.value);
+const min = parseFloat(inputEl.min);
+const max = parseFloat(inputEl.max);
+if (isNaN(val)) val = min;
+if (val < min) val = min;
+if (val > max) val = max;
+inputEl.value = val.toFixed(1);
+sliderEl.value = val;
+spanEl.textContent = val.toFixed(1);
+calculate();
+});
+});
+document.querySelectorAll('#nLevel, #pLevel, #kLevel').forEach(el => el.addEventListener('change', calculate));
+// Initial population
+updateCropOptions();
+}
+window.onload = initialize;
+</script>
+</body>
+</html>
